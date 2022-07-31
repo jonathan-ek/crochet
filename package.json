@@ -1,0 +1,31 @@
+{
+  "name": "crochet",
+  "version": "0.1.0",
+  "description": "A crochet pattern reader",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
+  },
+  "repository": "https://github.com/jonathan-ek/crochet",
+  "keywords": [
+    "Crochet"
+  ],
+  "build": {
+    "appId": "crochet",
+    "linux": {
+      "category": "Utility"
+    }
+  },
+  "author": "Jonathan Ek",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^19.0.9",
+    "electron-builder": "^23.1.0"
+  },
+  "dependencies": {
+    "@serialport/parser-readline": "^10.3.0",
+    "serialport": "^10.4.0"
+  }
+}
