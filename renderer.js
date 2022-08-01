@@ -9,6 +9,7 @@ const {ReadlineParser} = require('@serialport/parser-readline')
 
 const patternsFolder = './patterns/';
 const fs = require('fs');
+const {parse} = require("./parser");
 window.pattern_files = [];
 
 window.selectPattern = (pattern, callback) => {
@@ -17,7 +18,7 @@ window.selectPattern = (pattern, callback) => {
             callback(undefined, err)
             return;
         }
-        callback(data, undefined);
+        callback(parse(data), undefined);
     });
 }
 
