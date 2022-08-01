@@ -4,9 +4,9 @@
   "description": "A crochet pattern reader",
   "main": "main.js",
   "scripts": {
-    "start": "electron .",
-    "pack": "electron-builder --dir",
-    "dist": "electron-builder"
+    "start": "cd frontend && npm run build && cd .. && electron .",
+    "pack": "cd frontend && npm run build && cd .. && electron-builder --dir",
+    "dist": "cd frontend && npm run build && cd .. && electron-builder"
   },
   "repository": "https://github.com/jonathan-ek/crochet",
   "keywords": [
