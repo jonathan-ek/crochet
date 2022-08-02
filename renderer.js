@@ -31,29 +31,37 @@ crochet.getPatterns = () => {
     return patterns;
 }
 
+const pollSerialPorts = async (eventHandler) => {
+    await SerialPort.list().then((ports, err) => {
+        if (err) {
+            serial.err = err.message
+            return
+        }
 
-//
-// async function listSerialPorts() {
-//     await SerialPort.list().then((ports, err) => {
-//         if (err) {
-//             document.getElementById('error').textContent = err.message
-//             return
-//         } else {
-//             document.getElementById('error').textContent = ''
-//         }
-//
-//         if (ports.length === 0) {
-//             document.getElementById('error').textContent = 'No ports discovered'
-//         }
-//         const port_info = ports.filter((port) => port.vendorId === "2e8a" && port.productId === '0005')[0];
-//         console.log('ports', port_info.path);
-//         document.getElementById('ports').innerHTML = port_info.path;
-//
-//         const port = new SerialPort({path: port_info.path, baudRate: 115200})
-//
-//         const parser = port.pipe(new ReadlineParser({delimiter: '\r\n'}))
-//         parser.on('data', console.log)
-//     })
-// }
-//
-// listSerialPorts()
+        if (ports.length === 0) {
+            serial.err = 'No ports discovered'
+        }
+        const port_info = ports.filter((port) => port.vendorId === "2e8a" && port.productId === '0005')[0];
+        const port = new SerialPort({path: port_info.path, baudRate: 115200})
+        const parser = port.pipe(new ReadlineParser({delimiter: '\r\n'}))
+        let prevState = [0,0,0,0,0]
+        const handler = (dataStr) => {
+            const data = JSON.parse(dataStr);
+            const mapping = {
+                0: 'topRight',
+                1: 'topMiddle',
+                2: 'topLeft',
+                3: 'left',
+                4: 'right',
+            }
+            data.forEach((val, index) => {
+                if (val !== prevState[index]) {
+                    eventHandler({key: mapping[index], state: val});
+                }
+            })
+            prevState = data;
+        }
+        parser.on('data', handler)
+    })
+}
+crochet.connectPedal = pollSerialPorts

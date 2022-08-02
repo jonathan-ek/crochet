@@ -1,0 +1,28 @@
+.stitcher {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: space-around;
+  h2 {
+    margin: 0;
+    padding: 0;
+  }
+  .parts {
+    height: 80%;
+    width: 100%;
+    overflow-y: auto;
+    ul {
+          list-style-type: circle;
+      li {
+        &.selected {
+          list-style-type: disclosure-closed;
+        }
+        span {
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}

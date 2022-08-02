@@ -1,0 +1,33 @@
+.buttons {
+  text-align: center;
+  position: relative;
+  height: 100%;
+  width: 100%;
+
+  table {
+    padding-bottom: 10px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+
+    .small-button {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border-radius: 10px;
+      background-color: #bc113c;
+      cursor: pointer;
+    }
+
+    .big-button {
+      width: 40px;
+      height: 40px;
+
+      border-radius: 20px;
+      background-color: #2f8e41;
+      cursor: pointer;
+    }
+  }
+}
