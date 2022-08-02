@@ -1,0 +1,41 @@
+.App {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  height: 100vh;
+
+  .left-panel {
+    background-color: #bb5716;
+    flex-grow: 1;
+    height: 100vh;
+  }
+
+  .right-panel {
+    display: flex;
+    flex-grow: 8;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: flex-start;
+    height: 100vh;
+
+    .header {
+      background-color: #993368;
+      width: 100%;
+      height: 10vh;
+    }
+
+    .center {
+      background-color: #69d242;
+      width: 100%;
+      height: 80vh;
+    }
+
+    .footer {
+      background-color: #592891;
+      width: 100%;
+      height: 10vh;
+    }
+  }
+}
