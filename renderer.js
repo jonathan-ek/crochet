@@ -10,9 +10,9 @@ const {ReadlineParser} = require('@serialport/parser-readline')
 const patternsFolder = './patterns/';
 const fs = require('fs');
 const {parse} = require("./parser");
-window.pattern_files = [];
-
-window.selectPattern = (pattern, callback) => {
+const crochet = {};
+window.crochet = crochet;
+crochet.selectPattern = (pattern, callback) => {
     fs.readFile(`${patternsFolder}${pattern}`, 'utf8', (err, data) => {
         if (err) {
             callback(undefined, err)
@@ -21,13 +21,17 @@ window.selectPattern = (pattern, callback) => {
         callback(parse(data), undefined);
     });
 }
+crochet.getPatterns = () => {
+    const patterns = [];
+    fs.readdirSync(patternsFolder).forEach(file => {
+        if (file.endsWith('.cro')) {
+            patterns.push(file);
+        }
+    });
+    return patterns;
+}
 
-fs.readdirSync(patternsFolder).forEach(file => {
-    console.log(file);
-    if (file.endsWith('.cro')) {
-      window.pattern_files.push(file);
-    }
-});
+
 //
 // async function listSerialPorts() {
 //     await SerialPort.list().then((ports, err) => {

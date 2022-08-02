@@ -2,8 +2,8 @@ const listRIndex = (li, x) => {
     let idx = li.indexOf(x);
     const indices = [];
     while (idx !== -1) {
-      indices.push(idx);
-      idx = li.indexOf(x, idx + 1);
+        indices.push(idx);
+        idx = li.indexOf(x, idx + 1);
     }
     return indices[-1];
 };
@@ -18,6 +18,7 @@ const parseRange = (astr) => {
     });
     return Array.from(result.values()).sort((a, b) => a - b);
 }
+
 const expand = (parts, symbols) => {
     const expanded = [];
     let multiplier = 1;
@@ -69,10 +70,7 @@ const expand = (parts, symbols) => {
 const rowParser = (nr, row, stitches) => {
     const stitchSymbols = stitches.map(([x, y]) => x);
     const data = {
-        nr,
-        row,
-        expanded: [],
-        comment: undefined,
+        nr, row, expanded: [], comment: undefined,
     };
     const tmp = row.split('//');
     let rest;
@@ -91,8 +89,7 @@ const rowParser = (nr, row, stitches) => {
 
 const partParser = (rows, stitches) => {
     const part = {
-        name: rows[0].replace(/:/, '').trim(),
-        rows: [],
+        name: rows[0].replace(/:/, '').trim(), rows: [],
     };
     rows.forEach((row_str, i) => {
         if (i === 0) {
@@ -119,9 +116,7 @@ const partParser = (rows, stitches) => {
 
 const parse = (data) => {
     const pattern = {
-        stitches: [],
-        parts: {},
-        part_list: []
+        stitches: [], parts: {}, part_list: []
     };
     let section;
     let currentIndent = 0;
@@ -171,6 +166,7 @@ const parse = (data) => {
     });
     return pattern;
 };
+
 module.exports = {
-    parse
+    parse,
 };
