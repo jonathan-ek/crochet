@@ -1,5 +1,9 @@
+:root {
+  --background-color: #21252a;
+}
+
 .App {
-  background-color: #21252a;
+  background-color: var(--background-color);
   color: #a6d3cf;
   display: flex;
   flex-direction: row;

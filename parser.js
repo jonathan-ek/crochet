@@ -5,7 +5,7 @@ const listRIndex = (li, x) => {
         indices.push(idx);
         idx = li.indexOf(x, idx + 1);
     }
-    return indices[-1];
+    return indices[indices.length - 1 ];
 };
 
 const parseRange = (astr) => {
