@@ -19,7 +19,7 @@ function createWindow () {
   mainWindow.loadFile('index.html')
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools({mode: 'undocked'})
+  // mainWindow.webContents.openDevTools({mode: 'undocked'})
   mainWindow.on('close', () => {
     mainWindow.webContents.executeJavaScript('window.crochet.closeDB()')
   })

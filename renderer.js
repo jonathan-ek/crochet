@@ -80,13 +80,14 @@ db.serialize(function() {
     }
     crochet.fetchSaves = (pattern=null, cb) => {
         if (pattern) {
-            cb(db.map("SELECT * FROM saves where pattern=pattern order by timestamp ASC LIMIT 10", (err, row) => {
-                return row;
-            }));
+            console.log(pattern)
+            db.all("SELECT * FROM saves where pattern = ? order by timestamp desc LIMIT 10", pattern, (err, row) => {
+                cb(row);
+            });
         } else {
-            cb(db.map("SELECT * FROM saves order by timestamp ASC LIMIT 10", (err, row) => {
-                return row;
-            }));
+            db.all("SELECT * FROM saves order by timestamp desc LIMIT 10", (err, row) => {
+                cb(row);
+            });
         }
     }
     crochet.closeDB = () => {

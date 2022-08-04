@@ -98,7 +98,6 @@ class App extends React.Component {
         const crochet = window.crochet;
         const patterns = crochet.getPatterns();
         const cb = (data, err) => {
-            console.log(JSON.stringify(data));
             this.setState({pattern: data})
         }
         crochet.connectPedal(this.eventHandler);
@@ -109,16 +108,22 @@ class App extends React.Component {
                         patterns={patterns}
                         selected={this.state.selectedPattern}
                         selectPattern={(pattern) => {
+                            if (pattern === this.state.selectedPattern) {
+                                pattern = null;
+                                this.setState({pattern: null});
+                            }
                             this.setState({
                                 selectedPattern: pattern,
                                 part: null,
                                 rowIndex: 0,
                                 stitchIndex: 0,
                             });
-                            window.crochet.fetchSaves(null, (saved) => {
+                            window.crochet.fetchSaves(pattern, (saved) => {
                                 this.setState({saved});
                             })
-                            crochet.selectPattern(pattern, cb);
+                            if (pattern) {
+                                crochet.selectPattern(pattern, cb);
+                            }
                         }}
                     /></div>
                     <div className="middle"><PartSelector
@@ -159,6 +164,7 @@ class App extends React.Component {
                                     rowIndex: save.rowIndex,
                                     stitchIndex: save.stitchIndex,
                                 });
+                                crochet.selectPattern(save.pattern, cb);
                             }}
                         />
                     </div>
