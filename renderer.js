@@ -65,3 +65,32 @@ const pollSerialPorts = async (eventHandler) => {
     })
 }
 crochet.connectPedal = pollSerialPorts
+
+
+const sqlite3 = require('sqlite3').verbose();
+const db = new sqlite3.Database('mydb.db');
+
+db.serialize(function() {
+    db.run(
+        "CREATE TABLE if not exists saves (id INTEGER PRIMARY KEY AUTOINCREMENT, pattern TEXT, part TEXT, rowIndex INTEGER, stitchIndex INTEGER, timestamp INTEGER)");
+
+    crochet.save = (pattern, part, rowIndex, stitchIndex) => {
+        const stmt = db.prepare("INSERT INTO saves (pattern, part, rowIndex, stitchIndex, timestamp) VALUES (?, ?, ?, ?, ?)");
+        stmt.run(pattern, part, rowIndex, stitchIndex, new Date().valueOf()).finalize();
+    }
+    crochet.fetchSaves = (pattern=null, cb) => {
+        if (pattern) {
+            cb(db.map("SELECT * FROM saves where pattern=pattern order by timestamp ASC LIMIT 10", (err, row) => {
+                return row;
+            }));
+        } else {
+            cb(db.map("SELECT * FROM saves order by timestamp ASC LIMIT 10", (err, row) => {
+                return row;
+            }));
+        }
+    }
+    crochet.closeDB = () => {
+        db.close();
+    }
+});
+

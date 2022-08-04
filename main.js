@@ -20,6 +20,9 @@ function createWindow () {
 
   // Open the DevTools.
   mainWindow.webContents.openDevTools({mode: 'undocked'})
+  mainWindow.on('close', () => {
+    mainWindow.webContents.executeJavaScript('window.crochet.closeDB()')
+  })
 }
 
 // This method will be called when Electron has finished

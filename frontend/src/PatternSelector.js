@@ -1,5 +1,6 @@
 import React from 'react';
 import './PatternSelector.scss'
+import {capitalize} from "./utils";
 
 function PatternSelector({patterns, selectPattern, selected}) {
     return (
@@ -9,7 +10,7 @@ function PatternSelector({patterns, selectPattern, selected}) {
                 <ul>
                     {patterns.map((p) => (
                         <li className={selected === p ? 'selected' : ''}>
-                            <span onClick={() => selectPattern(p)}>{p}</span>
+                            <span onClick={() => selectPattern(p)}>{capitalize(p.replace('.cro', ''))}</span>
                         </li>
                     ))}
                 </ul>

@@ -6,6 +6,21 @@
   align-items: center;
   justify-content: space-around;
 
+  ul {
+          list-style-type: circle;
+      li {
+        &.selected {
+          list-style-type: disclosure-closed;
+        }
+        span {
+          cursor: pointer;
+          .pipe {
+            color: var(--contrast-color)
+          }
+        }
+      }
+    }
+
   h2 {
     margin: 0;
     padding: 0;

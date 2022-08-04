@@ -6,7 +6,8 @@
   "scripts": {
     "start": "cd frontend && npm run build && cd .. && electron .",
     "pack": "cd frontend && npm run build && cd .. && electron-builder --dir",
-    "dist": "cd frontend && npm run build && cd .. && electron-builder"
+    "dist": "cd frontend && npm run build && cd .. && electron-builder",
+    "postinstall": "install-app-deps"
   },
   "repository": "https://github.com/jonathan-ek/crochet",
   "keywords": [
@@ -22,10 +23,11 @@
   "license": "MIT",
   "devDependencies": {
     "electron": "^19.0.9",
-    "electron-builder": "^23.1.0"
+    "electron-builder": "^23.3.3"
   },
   "dependencies": {
     "@serialport/parser-readline": "^10.3.0",
-    "serialport": "^10.4.0"
+    "serialport": "^10.4.0",
+    "sqlite3": "^5.0.11"
   }
 }

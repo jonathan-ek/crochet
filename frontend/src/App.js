@@ -22,8 +22,15 @@ class App extends React.Component {
                 'topLeft': 0,
                 'left': 0,
                 'right': 0,
-            }
+            },
+            saved: [],
         };
+    }
+
+    componentDidMount() {
+        window.crochet.fetchSaves(null, (saved) => {
+            this.setState({saved});
+        })
     }
 
     eventHandler(event) {
@@ -74,6 +81,9 @@ class App extends React.Component {
                         rowIndex = 0;
                     }
                     stitchIndex = 0;
+                } else if (state.eventState['topMiddle'] === 0 && event.key === 'topMiddle' && event.state) {
+                    // Save
+                    window.crochet.save(state.selectedPattern, part, rowIndex, stitchIndex)
                 }
             }
             return {
@@ -105,6 +115,9 @@ class App extends React.Component {
                                 rowIndex: 0,
                                 stitchIndex: 0,
                             });
+                            window.crochet.fetchSaves(null, (saved) => {
+                                this.setState({saved});
+                            })
                             crochet.selectPattern(pattern, cb);
                         }}
                     /></div>
@@ -137,6 +150,16 @@ class App extends React.Component {
                             part={this.state.part}
                             rowIndex={this.state.rowIndex}
                             stitchIndex={this.state.stitchIndex}
+                            saved={this.state.saved}
+                            loadSave={(id) => {
+                                const save = this.state.saved[id];
+                                this.setState({
+                                    selectedPattern: save.pattern,
+                                    part: save.part,
+                                    rowIndex: save.rowIndex,
+                                    stitchIndex: save.stitchIndex,
+                                });
+                            }}
                         />
                     </div>
                     <div className="footer"></div>
