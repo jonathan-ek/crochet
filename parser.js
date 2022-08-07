@@ -70,7 +70,7 @@ const expand = (parts, symbols) => {
 const rowParser = (nr, row, stitches) => {
     const stitchSymbols = stitches.map(([x, y]) => x);
     const data = {
-        nr, row, expanded: [], comment: undefined,
+        nr, expanded: [], comment: undefined,
     };
     const tmp = row.split('//');
     let rest;
@@ -81,6 +81,7 @@ const rowParser = (nr, row, stitches) => {
     } else {
         rest = tmp[0]
     }
+    data.row = rest
     const pattern = RegExp(`(([0-9])+|(\\()|(\\))|\\*|#(.*)#|${stitchSymbols.join("|")})`, 'g');
     const parts = Array.from(rest.trim().matchAll(pattern)).map((x) => x[0]);
     data.expanded = expand(parts, stitchSymbols);
@@ -151,9 +152,9 @@ const parse = (data) => {
             if (trimmed_line.includes('[++]')) {
                 pattern.stitches.push([trimmed_line.replace('[++]', '').trim(), '++'])
             } else if (trimmed_line.includes('[--]')) {
-                pattern.stitches.push([trimmed_line.replace('[--]', '').trim(), '++'])
+                pattern.stitches.push([trimmed_line.replace('[--]', '').trim(), '--'])
             } else {
-                pattern.stitches.push([trimmed_line, undefined]);
+                pattern.stitches.push([trimmed_line, null]);
             }
         } else if (section === 'part_list') {
             const [nr, part] = line.trim().replace(/^-/, '').trim().split(',');

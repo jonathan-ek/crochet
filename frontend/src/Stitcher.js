@@ -2,7 +2,7 @@ import React from 'react';
 import './Stitcher.scss'
 import {capitalize} from "./utils";
 
-function Stitcher({pattern, part, rowIndex, stitchIndex, saved, loadSave}) {
+function Stitcher({pattern, part, rowIndex, stitchIndex, saved, loadSave, half}) {
     console.log(Object.entries(saved))
     if (!pattern || !part) {
         return (
@@ -13,7 +13,9 @@ function Stitcher({pattern, part, rowIndex, stitchIndex, saved, loadSave}) {
                         {Object.entries(saved).map(([idx, save]) => (
                             <li>
                                 <span
-                                    onClick={() => loadSave(idx)}>{new Date(save.timestamp).toISOString().replace('T', ' ').split('.',1)[0]} <span className="pipe">|</span> {capitalize(save.pattern.replace('.cro', ''))} - {save.part} </span>
+                                    onClick={() => loadSave(idx)}>{new Date(save.timestamp).toISOString().replace('T', ' ').split('.', 1)[0]}
+                                    <span
+                                        className="pipe">|</span> {capitalize(save.pattern.replace('.cro', ''))} - {save.part} </span>
                             </li>))}
                     </ul>
                 </div>
@@ -22,9 +24,23 @@ function Stitcher({pattern, part, rowIndex, stitchIndex, saved, loadSave}) {
     }
     const partPattern = pattern.parts[part];
     const row = partPattern.rows[rowIndex];
+    const rowCount = (r) => {
+        return r.expanded.reduce((acc, cur) => {
+            const s = Object.fromEntries(pattern.stitches)[cur];
+            if (s === null) {
+                acc += 1;
+            } else if (s === '++') {
+                acc += 2;
+            } else if (s === '--') {
+                acc += 1;
+            }
+            return acc;
+        }, 0)
+    };
     return (
         <div className="stitcher">
-            <h2>{row.nr}</h2>
+            <h2>{row.nr} / {partPattern.rows[partPattern.rows.length - 1].nr}</h2>
+            <span>{Object.fromEntries(pattern.stitches)[row.expanded[stitchIndex]] === '++' ? half : ''}</span>
             <div className="stitches">
                 <div className="previous">
                     <div className="content">
@@ -39,6 +55,10 @@ function Stitcher({pattern, part, rowIndex, stitchIndex, saved, loadSave}) {
                             <span className="stitch">{st}</span>
                         ))}</div>
                 </div>
+            </div>
+            <div className="row-info">
+                <p className="prev-row-count">({rowIndex !== 0 && rowCount(partPattern.rows[rowIndex-1])})</p>
+                <p>{row.row} ({rowCount(row)})</p>
             </div>
             <p>{row.comment}</p>
         </div>

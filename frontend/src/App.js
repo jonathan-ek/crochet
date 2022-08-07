@@ -24,7 +24,12 @@ class App extends React.Component {
                 'right': 0,
             },
             saved: [],
+            lastAction: new Date().valueOf(),
+            half: 0,
         };
+        setInterval(() => {
+            this.setState((state) => ({lastAction: state.lastAction + 1}));
+        }, 1000)
     }
 
     componentDidMount() {
@@ -38,38 +43,53 @@ class App extends React.Component {
         this.setState((state) => {
             let rowIndex = state.rowIndex;
             let stitchIndex = state.stitchIndex;
+            let half = state.half;
             const pattern = state.pattern;
             const part = state.part;
             if (pattern && part) {
                 const partPattern = pattern.parts[part];
                 const row = partPattern.rows[rowIndex];
+                const stitch = Object.fromEntries(pattern.stitches)[row.expanded[stitchIndex]];
                 if (state.eventState['left'] === 0 && event.key === 'left' && event.state) {
                     // next stitch
-                    stitchIndex += 1;
-                    if (stitchIndex >= row.expanded.length) {
-                        stitchIndex = 0;
-                        rowIndex += 1;
-                        if (rowIndex >= partPattern.rows.length) {
-                            rowIndex = partPattern.rows.length - 1;
-                            stitchIndex = partPattern.rows[rowIndex].expanded.length - 1;
+                    if ((stitch === '++' && half === 1) || stitch !== '++') {
+                        stitchIndex += 1;
+                        if (stitchIndex >= row.expanded.length) {
+                            stitchIndex = 0;
+                            rowIndex += 1;
+                            if (rowIndex >= partPattern.rows.length) {
+                                rowIndex = partPattern.rows.length - 1;
+                                stitchIndex = partPattern.rows[rowIndex].expanded.length - 1;
+                            }
                         }
+                        half = 0;
+                    } else if (stitch === '++' && half === 0) {
+                        half = 1;
                     }
                 } else if (state.eventState['right'] === 0 && event.key === 'right' && event.state) {
                     // prev stitch
-                    stitchIndex -= 1;
-                    if (stitchIndex < 0) {
-                        rowIndex -= 1;
-                        if (rowIndex < 0) {
-                            rowIndex = 0;
-                            stitchIndex = 0;
-                        } else {
-                            stitchIndex = partPattern.rows[rowIndex].expanded.length - 1;
+                    if ((stitch === '++' && half === 0) || stitch !== '++') {
+                        stitchIndex -= 1;
+                        if (stitchIndex < 0) {
+                            rowIndex -= 1;
+                            if (rowIndex < 0) {
+                                rowIndex = 0;
+                                stitchIndex = 0;
+                            } else {
+                                stitchIndex = partPattern.rows[rowIndex].expanded.length - 1;
+                            }
                         }
+                        if (Object.fromEntries(pattern.stitches)[row.expanded[stitchIndex]] === '++') {
+                            half = 0;
+                        }
+                    } else if (stitch === '++' && half === 1) {
+                        half = 0;
                     }
                 } else if (state.eventState['topLeft'] === 0 && event.key === 'topLeft' && event.state) {
                     // next row
                     rowIndex += 1;
                     stitchIndex = 0;
+                    half = 0;
                     if (rowIndex >= partPattern.rows.length) {
                         rowIndex = partPattern.rows.length - 1;
                         stitchIndex = partPattern.rows[rowIndex].expanded.length - 1;
@@ -81,6 +101,7 @@ class App extends React.Component {
                         rowIndex = 0;
                     }
                     stitchIndex = 0;
+                    half = 0;
                 } else if (state.eventState['topMiddle'] === 0 && event.key === 'topMiddle' && event.state) {
                     // Save
                     window.crochet.save(state.selectedPattern, part, rowIndex, stitchIndex)
@@ -90,6 +111,8 @@ class App extends React.Component {
                 eventState: {...state.eventState, [event.key]: event.state},
                 rowIndex,
                 stitchIndex,
+                lastAction: new Date().valueOf(),
+                half,
             }
         });
     }
@@ -104,37 +127,41 @@ class App extends React.Component {
         return (
             <div className="App">
                 <div className="left-panel">
-                    <div className="top"><PatternSelector
-                        patterns={patterns}
-                        selected={this.state.selectedPattern}
-                        selectPattern={(pattern) => {
-                            if (pattern === this.state.selectedPattern) {
-                                pattern = null;
-                                this.setState({pattern: null});
-                            }
-                            this.setState({
-                                selectedPattern: pattern,
-                                part: null,
+                    <div className="top">
+                        <PatternSelector
+                            patterns={patterns}
+                            selected={this.state.selectedPattern}
+                            selectPattern={(pattern) => {
+                                if (pattern === this.state.selectedPattern) {
+                                    pattern = null;
+                                    this.setState({pattern: null});
+                                }
+                                this.setState({
+                                    selectedPattern: pattern,
+                                    part: null,
+                                    rowIndex: 0,
+                                    stitchIndex: 0,
+                                });
+                                window.crochet.fetchSaves(pattern, (saved) => {
+                                    this.setState({saved});
+                                })
+                                if (pattern) {
+                                    crochet.selectPattern(pattern, cb);
+                                }
+                            }}
+                        />
+                    </div>
+                    <div className="middle">
+                        <PartSelector
+                            pattern={this.state.pattern}
+                            selectPart={(part) => this.setState({
+                                part: part,
                                 rowIndex: 0,
                                 stitchIndex: 0,
-                            });
-                            window.crochet.fetchSaves(pattern, (saved) => {
-                                this.setState({saved});
-                            })
-                            if (pattern) {
-                                crochet.selectPattern(pattern, cb);
-                            }
-                        }}
-                    /></div>
-                    <div className="middle"><PartSelector
-                        pattern={this.state.pattern}
-                        selectPart={(part) => this.setState({
-                            part: part,
-                            rowIndex: 0,
-                            stitchIndex: 0,
-                        })}
-                        selected={this.state.part}
-                    /></div>
+                            })}
+                            selected={this.state.part}
+                        />
+                    </div>
                     <div className="bottom">
                         <Buttons
                             eventHandler={this.eventHandler}
@@ -156,6 +183,7 @@ class App extends React.Component {
                             rowIndex={this.state.rowIndex}
                             stitchIndex={this.state.stitchIndex}
                             saved={this.state.saved}
+                            half={this.state.half}
                             loadSave={(id) => {
                                 const save = this.state.saved[id];
                                 this.setState({
@@ -168,7 +196,9 @@ class App extends React.Component {
                             }}
                         />
                     </div>
-                    <div className="footer"></div>
+                    <div className="footer">
+                        {((new Date().valueOf() - this.state.lastAction) / 1000).toString(10).split('.', 1)}
+                    </div>
                 </div>
             </div>
         );

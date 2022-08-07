@@ -6,6 +6,7 @@
 }
 
 .App {
+  font-size: 1.2em;
   background-color: var(--background-color);
   color: var(--text-color);
   display: flex;
@@ -15,22 +16,22 @@
   height: 100vh;
   width: 100vw;
 
-::-webkit-scrollbar-track {
-	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-	border-radius: 10px;
-	background-color: var(--background-color);
-}
+  ::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    background-color: var(--background-color);
+  }
 
-::-webkit-scrollbar {
-	width: 12px;
-	background-color: var(--background-color);
-}
+  ::-webkit-scrollbar {
+    width: 12px;
+    background-color: var(--background-color);
+  }
 
-::-webkit-scrollbar-thumb {
-	border-radius: 10px;
-	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
-	background-color: var(--contrast-color);
-}
+  ::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
+    background-color: var(--contrast-color);
+  }
 
   .left-panel {
     border-right: solid 1px var(--border-color);
@@ -48,11 +49,13 @@
       width: 100%;
       height: 50vh;
     }
+
     .middle {
       border-top: solid 1px var(--border-color);
       width: 100%;
       height: calc(30vh - 1px);
     }
+
     .bottom {
       border-top: solid 1px var(--border-color);
       width: 100%;
@@ -85,6 +88,9 @@
     .footer {
       width: 100%;
       height: 10vh;
+
+      text-align: center;
+      margin-top: 10px;
     }
   }
 }
